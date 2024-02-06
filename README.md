@@ -1,24 +1,18 @@
-# How to send Notification to SeaTalk
 
 # 1. Use notify the package in Python
 import requests
 from notify import Notifier
 import os
 
-# SeaTalk API endpoint
 seatalk_api_url = 'https://api.seatalk.com/send_message'
 
-# SeaTalk credentials
-seatalk_system_account_id = 'system_account_id_here'
-seatalk_access_token = 'your_access_token_here'
+seatalk_system_account_id = 'system_account_id'
+seatalk_access_token = 'access_token'
 
-# Slack Webhook URL, replace with your own Webhook URL
 slack_webhook_url = os.environ.get('SLACK_WEBHOOK_URL')
 
-# Initialize Notifier instance
 notifier = Notifier()
 
-# Send message to SeaTalk
 def send_message_to_seatalk(text):
     message = {
         'text': text,
@@ -34,11 +28,9 @@ def send_message_to_seatalk(text):
     else:
         print('Failed to send message to SeaTalk:', response.text)
 
-# Send message to Slack
 def send_message_to_slack(text):
     notifier.notify(text, slack_webhook_url=slack_webhook_url)
 
-# Main program logic
 def main():
     # Send message to SeaTalk
     send_message_to_seatalk('This is a test message sent to SeaTalk!')
