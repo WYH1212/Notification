@@ -1,0 +1,10 @@
+#Use holidays the package
+import holidays
+cn_holidays = holidays.CountryHoliday('CN')
+print(cn_holidays)
+
+from datetime import date
+if date(2022, 1, 1) in cn_holidays:
+    print("New Year's Day is a holiday.")
+else:
+    print("New Year's Day is not a holiday.")
