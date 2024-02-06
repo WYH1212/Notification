@@ -1,0 +1,52 @@
+#Read Calendars and send notifications
+
+import requests
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+
+seatalk_api_url = 'https://api.seatalk.com/send_message'
+
+seatalk_system_account_id = 'system_ID'
+seatalk_access_token = 'access_note'
+
+SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+creds = None
+
+def send_message_to_seatalk(text):
+    message = {
+        'text': text,
+        'receiver': seatalk_system_account_id
+    }
+    headers = {
+        'Authorization': f'Bearer {seatalk_access_token}',
+        'Content-Type': 'application/json'
+    }
+    response = requests.post(seatalk_api_url, json=message, headers=headers)
+    if response.status_code == 200:
+        print('成功发送消息到 SeaTalk!')
+    else:
+        print('发送消息到 SeaTalk 失败:', response.text)
+
+def get_calendar_events():
+    global creds
+    creds = Credentials.from_authorized_user_file('token.json')
+    service = build('calendar', 'v3', credentials=creds)
+    now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' 表示 UTC 时间
+    events_result = service.events().list(calendarId='primary', timeMin=now,
+                                          maxResults=10, singleEvents=True,
+                                          orderBy='startTime').execute()
+    events = events_result.get('items', [])
+    return events
+
+def main():
+    events = get_calendar_events()
+    sea_message = "今日日历事件:\n"
+    for event in events:
+        start = event['start'].get('dateTime', event['start'].get('date'))
+        sea_message += f"- {event['summary']} 在 {start}\n"
+    send_message_to_seatalk(sea_message)
+
+if __name__ == "__main__":
+    main()
