@@ -32,10 +32,9 @@ def send_message_to_slack(text):
     notifier.notify(text, slack_webhook_url=slack_webhook_url)
 
 def main():
-    # Send message to SeaTalk
+    
     send_message_to_seatalk('This is a test message sent to SeaTalk!')
 
-    # Send message to Slack
     send_message_to_slack('This is a test message sent to Slack!')
 
 if __name__ == "__main__":
